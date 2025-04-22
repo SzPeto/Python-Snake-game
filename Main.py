@@ -5,15 +5,29 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
 from main_window import MainWindow
 
-is_game_over = False
 timer = QTimer()
+counter = 0
+speed = int(500)
 
 def game_loop():
-    window.move_snake()
-    window.update()
+    global counter
+    global speed
+
+    if not window.is_game_over:
+        window.move_snake()
+        window.update()
+    else:
+        timer.stop()
+        window.game_over_label.show()
+
+    counter += 1
+    if counter % 5 == 0 and speed > 100:
+        speed = int(speed * 0.97)
+        timer.setInterval(speed)
+
 
 def initialize_app():
-    global window # Declare the window global, so the game_loop can access it
+    global window # Declare the window global, so the initialize_app can modify it
     app = QApplication(sys.argv)
     window = MainWindow() # The main window should be initialized after QApplication initialization
     window.show()
